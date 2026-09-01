@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سامانه آنلاین کافی‌نت و مرکز چاپ + پنل مدیریت</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Vazirmatn Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                        <i class="fa-solid fa-print text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-black text-lg sm:text-xl text-slate-900 dark:text-white tracking-tight">چاپ‌آنلاین</span>
+                        <span class="text-xs text-blue-600 dark:text-blue-400 font-bold block -mt-1">و کافی‌نت دانشجویی</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Navigation -->
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                    <a href="#hero" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">صفحه اصلی</a>
+                    <a href="#services" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">خدمات</a>
+                    <a href="#calculator" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">ثبت سفارش</a>
+                    <a href="#tracking" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">پیگیری سفارش</a>
+                    <a href="#pricing" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">تعرفه‌ها</a>
+                    <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">تماس با ما</a>
+                </nav>
+
+                <!-- Actions & Admin Login Toggle -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Admin Panel Access Button -->
+                    <button onclick="openAdminAuthModal()" class="px-3 py-2 bg-purple-600/10 hover:bg-purple-600/20 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-shield text-purple-600 dark:text-purple-400"></i>
+                        <span>پنل مدیریت</span>
+                    </button>
+
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none" aria-label="تغییر تم">
+                        <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                    </button>
+                    
+                    <a href="#calculator" class="hidden sm:inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20 transition-all hover:scale-105 active:scale-95">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>ثبت سفارش</span>
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2 text-sm font-medium">
+            <a href="#hero" onclick="toggleMobileMenu()" class="block py-2 hover:text-blue-600">صفحه اصلی</a>
+            <a href="#services" onclick="toggleMobileMenu()" class="block py-2 hover:text-blue-600">خدمات</a>
+            <a href="#calculator" onclick="toggleMobileMenu()" class="block py-2 hover:text-blue-600">محاسبه قیمت و ثبت سفارش</a>
+            <a href="#tracking" onclick="toggleMobileMenu()" class="block py-2 hover:text-blue-600">پیگیری سفارش</a>
+            <a href="#pricing" onclick="toggleMobileMenu()" class="block py-2 hover:text-blue-600">تعرفه‌ها</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="block py-2 hover:text-blue-600">تماس با ما</a>
+            <button onclick="toggleMobileMenu(); openAdminAuthModal();" class="w-full text-right py-2 text-purple-600 dark:text-purple-400 font-bold flex items-center gap-2">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>ورود به پنل مدیریت</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section id="hero" class="relative py-12 md:py-20 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6 text-center md:text-right">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-200 dark:border-blue-800">
+                            <span class="flex h-2 w-2 rounded-full bg-blue-600 animate-ping"></span>
+                            سامانه هوشمند تحویل پروژه و چاپ آنلاین
+                        </div>
+                        <h1 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white leading-tight">
+                            چاپ سریع پروژه‌ها و جزوات دانشجویی با <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">تحویل فوری</span>
+                        </h1>
+                        <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg leading-relaxed">
+                            بدون نیاز به مراجعه حضوری، فایل‌های خود را آپلود کنید، هزینه را آنلاین محاسبه نموده و در کوتاه‌ترین زمان ممکن صحافی‌شده تحویل بگیرید.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-2">
+                            <a href="#calculator" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>ارسال فایل و محاسبه قیمت</span>
+                            </a>
+                            <a href="#tracking" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold transition-all text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <span>پیگیری سفارش</span>
+                            </a>
+                        </div>
+                        <!-- Features list -->
+                        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200 dark:border-slate-800 text-center md:text-right">
+                            <div>
+                                <span class="block font-bold text-slate-900 dark:text-white text-lg">۱۰۰٪</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">تضمین کیفیت چاپ</span>
+                            </div>
+                            <div>
+                                <span class="block font-bold text-slate-900 dark:text-white text-lg">ارسال سریع</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">پیک و پست پیشتاز</span>
+                            </div>
+                            <div>
+                                <span class="block font-bold text-slate-900 dark:text-white text-lg">پشتیبانی</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">۲۴ ساعته آنلاین</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hero Visual -->
+                    <div class="relative flex justify-center">
+                        <div class="w-full max-w-md bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-3xl p-1 shadow-2xl shadow-blue-500/20 rotate-1 transform hover:rotate-0 transition-transform duration-500">
+                            <div class="bg-white dark:bg-slate-900 rounded-[22px] p-6 space-y-4">
+                                <div class="flex items-center justify-between border-b dark:border-slate-800 pb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-3 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl">
+                                            <i class="fa-solid fa-file-pdf text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">پایان_نامه_نهایی.pdf</h4>
+                                            <p class="text-xs text-slate-400">۱۴۸ صفحه • ۲ نسخه</p>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 rounded-md text-xs font-bold">آماده چاپ</span>
+                                </div>
+                                <div class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+                                    <div class="flex justify-between">
+                                        <span>نوع چاپ:</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-200">سیاه و سفید (دورو)</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>صحافی:</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-200">جلد سخت (گالینگور طلایی)</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>زمان تحویل:</span>
+                                        <span class="font-semibold text-blue-600 dark:text-blue-400">امروز تا ساعت ۱۸</span>
+                                    </div>
+                                </div>
+                                <div class="pt-2">
+                                    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                        <div class="bg-blue-600 h-2.5 rounded-full w-3/4 animate-pulse"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                                        <span>در حال پردازش</span>
+                                        <span>۷۵٪</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-16 bg-white dark:bg-slate-800/50 transition-colors">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">خدمات جامع کافی‌نت و چاپ</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">کلیه امور دانشجویی، سازمانی و ثبت‌نام‌های اینترنتی با بالاترین دقت</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-print"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">پرینت و چاپ دیجیتال</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">چاپ سیاه-سفید و رنگی جزوات، پروژه‌ها و مقالات با کاغذ ۷۰ و ۸۰ گرمی عالی.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">صحافی و پایان‌نامه</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">صحافی فنری، طلقی، جلد سخت گالینگور با طلا کوب استاندارد دانشگاهی.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-note-sticky"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">اسکن و پلات نقشه</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">اسکن با کیفیت بالا مدارک و اسناد، چاپ پلات و پوستر تا ابعاد A0.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">خدمات کافی‌نت آنلاین</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">ثبت‌نام‌های اینترنتی، انتخاب واحد، تحقیق، تایپ و ویراستاری تخصصی.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator & Upload Form Section -->
+        <section id="calculator" class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">محاسبه‌گر آنلاین قیمت و ثبت سفارش</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">مشخصات فایل خود را وارد کرده تا قیمت دقیق آن به‌صورت آنی محاسبه شود</p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Form Controls (2 Columns) -->
+                    <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700/60 shadow-sm space-y-6">
+                        
+                        <!-- File Upload Box -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">۱. انتخاب و آپلود فایل (PDF/Word/Zip)</label>
+                            <div id="dropZone" onclick="triggerFileInput()" class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-slate-50/50 dark:bg-slate-900/30">
+                                <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(event)">
+                                <div id="uploadPlaceholder" class="space-y-2">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-blue-500"></i>
+                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">کلیک کنید یا فایل را به اینجا بکشید</p>
+                                    <p class="text-xs text-slate-400">حداکثر حجم فایل: ۵۰ مگابایت</p>
+                                </div>
+                                <div id="fileInfoDisplay" class="hidden space-y-3">
+                                    <div class="flex items-center justify-center gap-3 text-blue-600 dark:text-blue-400 font-bold text-sm">
+                                        <i class="fa-solid fa-file-check text-xl"></i>
+                                        <span id="fileNameText">document.pdf</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                                        <div id="uploadProgressBar" class="bg-blue-600 h-2 rounded-full w-0 transition-all duration-300"></div>
+                                    </div>
+                                    <span id="uploadStatusText" class="text-xs text-slate-500 block">در حال آماده‌سازی...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Options Form -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">نوع چاپ</label>
+                                <select id="printColor" onchange="calculatePrice()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white">
+                                    <option value="bw">سیاه و سفید (اقتصادی)</option>
+                                    <option value="color">تمام رنگی (کیفیت بالا)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">نحوه چاپ روی برگه</label>
+                                <select id="printSides" onchange="calculatePrice()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white">
+                                    <option value="double">دورو (توصیه شده)</option>
+                                    <option value="single">یک‌رو</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">تعداد برگه‌ها</label>
+                                <input type="number" id="pageCount" value="10" min="1" oninput="calculatePrice()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">تعداد سری (نسخه)</label>
+                                <input type="number" id="copiesCount" value="1" min="1" oninput="calculatePrice()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white">
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">نوع صحافی</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="binding" value="none" checked onchange="calculatePrice()" class="peer hidden">
+                                        <div class="p-3 border rounded-xl border-slate-200 dark:border-slate-700 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 text-center transition-all">
+                                            <i class="fa-solid fa-minus text-slate-400 block mb-1"></i>
+                                            <span class="text-xs font-bold block">بدون صحافی</span>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="binding" value="spiral" onchange="calculatePrice()" class="peer hidden">
+                                        <div class="p-3 border rounded-xl border-slate-200 dark:border-slate-700 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 text-center transition-all">
+                                            <i class="fa-solid fa-scroll text-blue-500 block mb-1"></i>
+                                            <span class="text-xs font-bold block">صحافی فنری</span>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="binding" value="hardcover" onchange="calculatePrice()" class="peer hidden">
+                                        <div class="p-3 border rounded-xl border-slate-200 dark:border-slate-700 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 text-center transition-all">
+                                            <i class="fa-solid fa-book text-indigo-500 block mb-1"></i>
+                                            <span class="text-xs font-bold block">جلد سخت (گالینگور)</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice & Checkout Box (1 Column) -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                                <h3 class="font-black text-lg flex items-center gap-2">
+                                    <i class="fa-solid fa-receipt text-blue-400"></i>
+                                    <span>پیش‌فاکتور آنلاین</span>
+                                </h3>
+                                <span class="text-xs bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full">محاسبه خودکار</span>
+                            </div>
+
+                            <div class="space-y-3 text-sm text-slate-300">
+                                <div class="flex justify-between">
+                                    <span>هزینه هر برگ چاپ:</span>
+                                    <span id="unitPriceText" class="font-bold text-white">۱,۰۰۰ تومان</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>مجموع صفحات چاپ:</span>
+                                    <span id="totalPagesText" class="font-bold text-white">۱۰ برگ</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>هزینه صحافی:</span>
+                                    <span id="bindingPriceText" class="font-bold text-white">۰ تومان</span>
+                                </div>
+                                <div class="flex justify-between pt-2 border-t border-slate-700 text-slate-400 text-xs">
+                                    <span>تخفیف دانشجویی:</span>
+                                    <span class="text-green-400">رایگان</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center space-y-1">
+                                <span class="text-xs text-slate-400 block">مبلغ قابل پرداخت:</span>
+                                <span id="totalPriceText" class="text-3xl font-black text-blue-400">۱۰,۰۰۰</span>
+                                <span class="text-xs text-slate-400">تومان</span>
+                            </div>
+
+                            <div class="space-y-3 pt-2">
+                                <input type="text" id="customerName" placeholder="نام و نام خانوادگی" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                                <input type="tel" id="customerPhone" placeholder="شماره موبایل (جهت پیامک پیگیری)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <button onclick="submitOrder()" class="w-full mt-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <span>تأیید و ثبت نهایی سفارش</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Tracking Section -->
+        <section id="tracking" class="py-16 bg-white dark:bg-slate-800/50 transition-colors">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">پیگیری آنلاین وضعیت سفارش</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">کد پیگیری دریافت شده را وارد کنید تا از وضعیت لحظه‌ای چاپ مطلع شوید</p>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="trackingCodeInput" placeholder="مثال: PRT-98241" class="flex-grow bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white">
+                        <button onclick="trackOrder()" class="px-6 py-3 bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>استعلام وضعیت</span>
+                        </button>
+                    </div>
+
+                    <div id="trackingResult" class="hidden pt-6 border-t border-slate-200 dark:border-slate-800 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400">کد پیگیری:</span>
+                                <span id="resultCode" class="font-mono font-bold text-slate-800 dark:text-slate-200 block"></span>
+                            </div>
+                            <span id="resultStatusBadge" class="px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full text-xs font-bold">در حال پردازش</span>
+                        </div>
+
+                        <div class="grid grid-cols-3 text-center relative">
+                            <div class="space-y-2 relative z-10">
+                                <div id="step1Icon" class="w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">ثبت سفارش</span>
+                            </div>
+                            <div class="space-y-2 relative z-10">
+                                <div id="step2Icon" class="w-10 h-10 mx-auto rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-sm">
+                                    <i class="fa-solid fa-print"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">در حال چاپ</span>
+                            </div>
+                            <div class="space-y-2 relative z-10">
+                                <div id="step3Icon" class="w-10 h-10 mx-auto rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-sm">
+                                    <i class="fa-solid fa-box-archive"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-400 block">آماده تحویل</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Table Section -->
+        <section id="pricing" class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">جدول تعرفه خدمات چاپ</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">قیمت‌های شفاف با تخفیف ویژه برای تیراژ بالای دانشجویی</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700/60 shadow-sm">
+                        <thead class="bg-slate-100 dark:bg-slate-900/80 text-xs font-bold text-slate-600 dark:text-slate-300">
+                            <tr>
+                                <th class="p-4">نوع خدمت</th>
+                                <th class="p-4">توضیحات / سایز</th>
+                                <th class="p-4">تعداد (برگ)</th>
+                                <th class="p-4">تعرفه فعلی</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                                <td class="p-4 font-bold">چاپ سیاه و سفید A4 (دورو)</td>
+                                <td class="p-4 text-xs text-slate-500">کاغذ ۸۰ گرم اندونزی</td>
+                                <td class="p-4">۱ تا ۱۰۰ برگ</td>
+                                <td id="priceTableBW" class="p-4 font-bold text-blue-600 dark:text-blue-400">۱,۰۰۰ تومان</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                                <td class="p-4 font-bold">چاپ رنگی A4 (کیفیت عالی)</td>
+                                <td class="p-4 text-xs text-slate-500">کاغذ گلاسه یا تحریر High quality</td>
+                                <td class="p-4">از ۱ برگ به بالا</td>
+                                <td id="priceTableColor" class="p-4 font-bold text-blue-600 dark:text-blue-400">۳,۵۰۰ تومان</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                                <td class="p-4 font-bold">صحافی فنری دوبل</td>
+                                <td class="p-4 text-xs text-slate-500">همراه با طلق شفاف و کریستالی</td>
+                                <td class="p-4">تا ۲۰۰ صفحه</td>
+                                <td id="priceTableSpiral" class="p-4 font-bold text-blue-600 dark:text-blue-400">۲۵,۰۰۰ تومان</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                                <td class="p-4 font-bold">صحافی جلد سخت (گالینگور)</td>
+                                <td class="p-4 text-xs text-slate-500">طلاکوب ویژه پایان‌نامه و پروژه‌ها</td>
+                                <td class="p-4">جلد استاندارد</td>
+                                <td id="priceTableHardcover" class="p-4 font-bold text-blue-600 dark:text-blue-400">۱۲۰,۰۰۰ تومان</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 bg-white dark:bg-slate-800/50 transition-colors">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">ارتباط با مرکز چاپ و پشتیبانی</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                            در صورت نیاز به مشاوره قبل از ثبت سفارش یا هماهنگی برای چاپ پروژه‌های فورس‌ماژور، می‌توانید از طریق راه‌های زیر با ما در تماس باشید.
+                        </p>
+                        
+                        <div class="space-y-4 text-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-slate-400">آدرس دفتر مرکزی:</span>
+                                    <span class="font-bold text-slate-800 dark:text-slate-200">تهران، میدان انقلاب، خیابان کارگر شمالی، روبروی درب اصلی دانشگاه</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-slate-400">شماره تلفن پشتیبانی:</span>
+                                    <span class="font-bold text-slate-800 dark:text-slate-200">۰۲۱-۶۶۹۵۰۰۰۰ / ۰۹۱۲۰۰۰۰۰۰۰</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-slate-400">ساعات کاری:</span>
+                                    <span class="font-bold text-slate-800 dark:text-slate-200">شنبه تا پنجشنبه: ۸:۰۰ الی ۲۰:۰۰</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 text-center space-y-4">
+                        <i class="fa-solid fa-map-location-dot text-5xl text-blue-500"></i>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-200">موقعیت مکانی روی نقشه</h4>
+                        <p class="text-xs text-slate-400">دسترسی آسان از طریق مترو انقلاب و بی‌آرتی</p>
+                        <div class="pt-2">
+                            <span class="inline-block bg-blue-600 text-white text-xs px-4 py-2 rounded-xl font-bold">مراجعه حضوری با هماهنگی قبلی</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-8 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-blue-500"></i>
+                <span>پروژه دانشگاهی - طراحی و پیاده‌سازی وب‌سایت مرکز چاپ و کافی‌نت آنلاین</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="openAdminAuthModal()" class="text-xs text-purple-400 hover:underline">ورود مدیریت سیستم</button>
+                <p class="text-xs text-slate-500">طراحی شده جهت تحویل پروژه پایانی • ۱۴۰۵</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Customer Success Confirmation Modal -->
+    <div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 text-center border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            
+            <div class="space-y-2">
+                <h3 class="text-xl font-black text-slate-900 dark:text-white">سفارش شما با موفقیت ثبت شد!</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">فایل شما جهت بررسی به اپراتور مرکز چاپ ارسال شد.</p>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-2xl space-y-1">
+                <span class="text-xs text-slate-400 block">کد پیگیری اختصاصی شما:</span>
+                <span id="modalTrackingCode" class="font-mono text-2xl font-black text-blue-600 dark:text-blue-400 tracking-wider">PRT-00000</span>
+                <span class="text-[10px] text-slate-400 block pt-1">این کد را جهت استعلام آخرین وضعیت چاپ نگه دارید.</span>
+            </div>
+
+            <button onclick="closeModal()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all">
+                متوجه شدم / بستن
+            </button>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN AUTH MODAL -->
+    <div id="adminAuthModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-6 sm:p-8 space-y-6 border border-slate-200 dark:border-slate-800 shadow-2xl relative">
+            <button onclick="closeAdminAuthModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 class="text-xl font-black text-slate-900 dark:text-white">ورود به پنل مدیریت</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">کد عبور مدیر را وارد کنید (رمز پیش‌فرض: <span class="font-bold text-purple-600 dark:text-purple-400">1234</span>)</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">رمز عبور مدیریت</label>
+                    <input type="password" id="adminPassInput" value="1234" placeholder="رمز عبور..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-center font-mono focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white">
+                </div>
+
+                <button onclick="loginAdmin()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>ورود به داشبورد</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN DASHBOARD MODAL PANEL -->
+    <div id="adminDashboardModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-2 sm:p-6 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-6xl max-h-[92vh] flex flex-col border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden my-auto">
+            
+            <!-- Dashboard Header -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-900/80">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center text-lg shadow-md shadow-purple-500/30">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-black text-lg text-slate-900 dark:text-white">پنل مدیریت کافی‌نت و مرکز چاپ</h2>
+                        <span class="text-xs text-slate-500">کنترل کامل سفارش‌ها، تعرفه‌ها و فایل‌ها</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="hidden sm:inline-flex px-3 py-1 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full text-xs font-bold items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        سیستم فعال است
+                    </span>
+                    <button onclick="closeAdminDashboard()" class="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Content Container (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-8 flex-grow">
+                
+                <!-- Stats Summary Row -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">کل سفارشات:</span>
+                            <span id="statTotalOrders" class="text-xl font-black text-slate-900 dark:text-white">۳</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">در حال پردازش:</span>
+                            <span id="statPendingOrders" class="text-xl font-black text-amber-600 dark:text-amber-400">۲</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">مجموع کل درآمد:</span>
+                            <span id="statTotalRevenue" class="text-xl font-black text-green-600 dark:text-green-400">۱۴۵,۰۰۰</span>
+                            <span class="text-[10px] text-slate-400">تومان</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-copy"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">مجموع برگه‌ها:</span>
+                            <span id="statTotalPages" class="text-xl font-black text-purple-600 dark:text-purple-400">۱۶۸</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Tabs / Sections -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    
+                    <!-- Orders Table Management (2 Cols) -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-black text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-purple-500"></i>
+                                <span>مدیریت و پیگیری سفارشات</span>
+                            </h3>
+                            <button onclick="renderAdminOrders()" class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-rotate"></i>
+                                <span>بروزرسانی لیست</span>
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700/60">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700">
+                                    <tr>
+                                        <th class="p-3">کد سفارش</th>
+                                        <th class="p-3">مشتری</th>
+                                        <th class="p-3">جزئیات فایل</th>
+                                        <th class="p-3">مبلغ کل</th>
+                                        <th class="p-3">وضعیت</th>
+                                        <th class="p-3">تغییر وضعیت</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminOrdersTableBody" class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                                    <!-- Dynamic Row Injections -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pricing & Settings Control (1 Col) -->
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-6">
+                        <div class="border-b border-slate-200 dark:border-slate-700 pb-3">
+                            <h3 class="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-tags text-purple-500"></i>
+                                <span>مدیریت قیمت‌ها و تعرفه‌ها</span>
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">تغییر قیمت‌ها فوراً روی محاسبه‌گر سایت اعمال می‌شود</p>
+                        </div>
+
+                        <div class="space-y-4 text-xs">
+                            <div>
+                                <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1">چاپ سیاه و سفید (تومان/برگ):</label>
+                                <input type="number" id="adminPriceBW" value="1000" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500 font-bold dark:text-white">
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1">چاپ تمام رنگی (تومان/برگ):</label>
+                                <input type="number" id="adminPriceColor" value="3500" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500 font-bold dark:text-white">
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1">هزینه صحافی فنری (تومان):</label>
+                                <input type="number" id="adminPriceSpiral" value="25000" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500 font-bold dark:text-white">
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1">هزینه صحافی گالینگور (تومان):</label>
+                                <input type="number" id="adminPriceHardcover" value="120000" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500 font-bold dark:text-white">
+                            </div>
+
+                            <button onclick="saveAdminPrices()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-all shadow-md shadow-purple-600/20 flex items-center justify-center gap-2 text-xs">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>ذخیره تعرفه‌های جدید</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // System State & Initial Orders Database
+        let rates = {
+            bw: 1000,
+            color: 3500,
+            spiral: 25000,
+            hardcover: 120000
+        };
+
+        let dbOrders = [
+            {
+                code: 'PRT-98241',
+                customer: 'علی محمدی (۰۹۱۲۱۱۱۱۱۱۱)',
+                file: 'پایان_نامه_نهایی.pdf',
+                pages: 148,
+                copies: 2,
+                total: 145000,
+                status: 'printing' // 'processing', 'printing', 'ready', 'completed'
+            },
+            {
+                code: 'PRT-45120',
+                customer: 'سارا رضایی (۰۹۳۵۲۲۲۲۲۲۲)',
+                file: 'جزوه_ریاضی_۲.pdf',
+                pages: 45,
+                copies: 1,
+                total: 45000,
+                status: 'processing'
+            },
+            {
+                code: 'PRT-11098',
+                customer: 'رضا امینی (۰۹۱۹۳۳۳۳۳۳۳)',
+                file: 'پروژه_طراحی.pdf',
+                pages: 20,
+                copies: 1,
+                total: 70000,
+                status: 'processing'
+            }
+        ];
+
+        // Dark Mode Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-lg';
+            }
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // File Selection Simulation
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                const file = files[0];
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+                document.getElementById('fileInfoDisplay').classList.remove('hidden');
+                document.getElementById('fileNameText').innerText = file.name;
+
+                const progressBar = document.getElementById('uploadProgressBar');
+                const statusText = document.getElementById('uploadStatusText');
+                let width = 0;
+                progressBar.style.width = '0%';
+                statusText.innerText = 'در حال آپلود فایل...';
+
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        statusText.innerText = 'آپلود با موفقیت انجام شد ✅';
+                        statusText.classList.add('text-green-500');
+                    } else {
+                        width += 25;
+                        progressBar.style.width = width + '%';
+                    }
+                }, 120);
+            }
+        }
+
+        // Calculator Pricing Engine
+        function calculatePrice() {
+            const printColor = document.getElementById('printColor').value;
+            const printSides = document.getElementById('printSides').value;
+            const pageCount = parseInt(document.getElementById('pageCount').value) || 0;
+            const copiesCount = parseInt(document.getElementById('copiesCount').value) || 0;
+            const binding = document.querySelector('input[name="binding"]:checked').value;
+
+            let unitPrice = printColor === 'bw' ? rates.bw : rates.color;
+            
+            if (printSides === 'single' && printColor === 'bw') {
+                unitPrice = rates.bw * 1.2;
+            }
+
+            let bindingCost = 0;
+            if (binding === 'spiral') bindingCost = rates.spiral;
+            if (binding === 'hardcover') bindingCost = rates.hardcover;
+
+            const printTotal = (pageCount * unitPrice) * copiesCount;
+            const totalBinding = bindingCost * copiesCount;
+            const grandTotal = printTotal + totalBinding;
+
+            document.getElementById('unitPriceText').innerText = unitPrice.toLocaleString('fa-IR') + ' تومان';
+            document.getElementById('totalPagesText').innerText = (pageCount * copiesCount).toLocaleString('fa-IR') + ' برگ';
+            document.getElementById('bindingPriceText').innerText = totalBinding.toLocaleString('fa-IR') + ' تومان';
+            document.getElementById('totalPriceText').innerText = grandTotal.toLocaleString('fa-IR');
+        }
+
+        // Submit Order Frontend
+        function submitOrder() {
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const fileInput = document.getElementById('fileInput');
+
+            if (!name || !phone) {
+                showToast('لطفاً نام و شماره تماس خود را وارد نمایید.');
+                return;
+            }
+
+            const randomCode = 'PRT-' + Math.floor(10000 + Math.random() * 90000);
+            const pageCount = parseInt(document.getElementById('pageCount').value) || 10;
+            const copiesCount = parseInt(document.getElementById('copiesCount').value) || 1;
+            const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'پروژه_جدید.pdf';
+            
+            const printColor = document.getElementById('printColor').value;
+            const binding = document.querySelector('input[name="binding"]:checked').value;
+            let unitPrice = printColor === 'bw' ? rates.bw : rates.color;
+            let bindingCost = binding === 'spiral' ? rates.spiral : (binding === 'hardcover' ? rates.hardcover : 0);
+            const grandTotal = ((pageCount * unitPrice) + bindingCost) * copiesCount;
+
+            // Push to Admin Database
+            dbOrders.unshift({
+                code: randomCode,
+                customer: `${name} (${phone})`,
+                file: fileName,
+                pages: pageCount,
+                copies: copiesCount,
+                total: grandTotal,
+                status: 'processing'
+            });
+
+            document.getElementById('modalTrackingCode').innerText = randomCode;
+            document.getElementById('trackingCodeInput').value = randomCode;
+
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        // Order Tracking System
+        function trackOrder() {
+            const code = document.getElementById('trackingCodeInput').value.trim();
+            if (!code) {
+                showToast('لطفاً یک کد پیگیری وارد کنید.');
+                return;
+            }
+
+            const foundOrder = dbOrders.find(o => o.code.toLowerCase() === code.toLowerCase());
+            const resultBox = document.getElementById('trackingResult');
+            const statusBadge = document.getElementById('resultStatusBadge');
+            
+            const step1 = document.getElementById('step1Icon');
+            const step2 = document.getElementById('step2Icon');
+            const step3 = document.getElementById('step3Icon');
+
+            document.getElementById('resultCode').innerText = code;
+            resultBox.classList.remove('hidden');
+
+            const currentStatus = foundOrder ? foundOrder.status : 'processing';
+
+            if (currentStatus === 'processing') {
+                statusBadge.innerText = 'در حال بررسی/پردازش';
+                statusBadge.className = 'px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full text-xs font-bold';
+                step1.className = 'w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm';
+                step2.className = 'w-10 h-10 mx-auto rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-sm';
+                step3.className = 'w-10 h-10 mx-auto rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-sm';
+            } else if (currentStatus === 'printing') {
+                statusBadge.innerText = 'در حال چاپ دستگاه';
+                statusBadge.className = 'px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold';
+                step1.className = 'w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm';
+                step2.className = 'w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm animate-pulse';
+                step3.className = 'w-10 h-10 mx-auto rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400 flex items-center justify-center font-bold text-sm';
+            } else if (currentStatus === 'ready' || currentStatus === 'completed') {
+                statusBadge.innerText = 'آماده تحویل / تحویل شده';
+                statusBadge.className = 'px-3 py-1 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full text-xs font-bold';
+                step1.className = 'w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm';
+                step2.className = 'w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm';
+                step3.className = 'w-10 h-10
